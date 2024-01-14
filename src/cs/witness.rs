@@ -22,6 +22,7 @@ pub fn variable_assignment(
     if !padding.is_empty() {
         helpers::set_zero(padding)?;
     }
+    dbg!("Check point 2.4.1");
 
     let (d_variable_indexes_ref, d_variable_values_ref, d_result) = unsafe {
         (
@@ -37,6 +38,7 @@ pub fn variable_assignment(
         d_result,
         get_stream(),
     )?;
+    dbg!("Check point 2.4.2");
 
     Ok(())
 }
