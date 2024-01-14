@@ -216,17 +216,24 @@ pub fn construct_trace_storage_from_remote_witness_data<A: GoodAllocator>(
         .zip(variables_monomial_storage.chunks_mut(domain_size))
     {
         let transferred = CudaEvent::create_with_flags(CudaEventCreateFlags::DISABLE_TIMING)?;
+        dbg!("Check point 2.1");
         let mut d_variable_indexes = dvec!(variables.len());
         mem::h2d_on_stream(variables, &mut d_variable_indexes, &inner_h2d_stream)?;
+        dbg!("Check point 2.2");
         transferred.record(&inner_h2d_stream)?;
+        dbg!("Check point 2.3");
         get_stream().wait_event(&transferred, CudaStreamWaitEventFlags::DEFAULT)?;
+        dbg!("Check point 2.4");
         variable_assignment(&d_variable_indexes, &d_variable_values, d_variables_raw)?;
+        dbg!("Check point 2.5");
         let (_, padding) = d_variables_raw.split_at_mut(d_variable_indexes.len());
         if !padding.is_empty() {
             helpers::set_zero(padding)?;
         }
         ntt::intt_into(d_variables_raw, d_variables_monomial)?;
+        dbg!("Check point 2.6");
         ntt::bitreverse(d_variables_monomial)?;
+        dbg!("Check point 2.7");
     }
 
     dbg!("Check point 3");
