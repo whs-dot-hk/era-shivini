@@ -31,6 +31,7 @@ pub fn variable_assignment(
             DeviceSlice::from_mut_slice(d_result),
         )
     };
+    dbg!("Check point 2.4.2");
 
     select(
         d_variable_indexes_ref,
@@ -38,7 +39,7 @@ pub fn variable_assignment(
         d_result,
         get_stream(),
     )?;
-    dbg!("Check point 2.4.2");
+    dbg!("Check point 2.4.3");
 
     Ok(())
 }
