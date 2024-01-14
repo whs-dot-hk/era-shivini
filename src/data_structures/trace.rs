@@ -194,9 +194,12 @@ pub fn construct_trace_storage_from_remote_witness_data<A: GoodAllocator>(
     let inner_h2d_stream = get_stream();
     let mut d_variable_values = dvec!(all_values.len());
     mem::h2d_on_stream(&all_values, &mut d_variable_values, &inner_h2d_stream)?;
+    dbg!("Check point 1");
 
     let mut raw_storage = GenericStorage::allocate(num_polys, domain_size)?;
     let mut monomial_storage = GenericStorage::allocate(num_polys, domain_size)?;
+    dbg!("Check point 2");
+
     let remaining_raw_storage = raw_storage.as_single_slice_mut();
     let remaining_monomial_storage = monomial_storage.as_single_slice_mut();
     assert_eq!(remaining_raw_storage.len(), num_polys * domain_size);
@@ -225,6 +228,8 @@ pub fn construct_trace_storage_from_remote_witness_data<A: GoodAllocator>(
         ntt::intt_into(d_variables_raw, d_variables_monomial)?;
         ntt::bitreverse(d_variables_monomial)?;
     }
+
+    dbg!("Check point 3");
 
     // now witness values
     let size_of_all_witness_cols = num_witness_cols * domain_size;
@@ -256,6 +261,8 @@ pub fn construct_trace_storage_from_remote_witness_data<A: GoodAllocator>(
     } else {
         assert!(witnesses_raw_storage.is_empty());
     }
+
+    dbg!("Check point 4");
 
     // we can transform and pad multiplicities on the host then transfer to the device
     // TODO: consider to make a select function which allows values that are generic in type
@@ -307,6 +314,8 @@ pub fn construct_trace_storage_from_remote_witness_data<A: GoodAllocator>(
         assert!(multiplicities_raw_storage.is_empty())
     }
 
+    dbg!("Check point 5");
+
     let raw_trace_storage = GenericTraceStorage {
         storage: raw_storage,
         coset_idx: None,
@@ -333,6 +342,8 @@ pub fn construct_trace_storage_from_remote_witness_data<A: GoodAllocator>(
     let mut subtrees = vec![first_subtree, second_subree];
     let mut subtree_roots = vec![first_subtree_root, second_subtree_root];
     let trace_tree_cap = subtree_roots.compute_cap::<DefaultTreeHasher>(&mut subtrees, cap_size)?;
+
+    dbg!("Check point 6");
 
     Ok((
         raw_trace_storage,
